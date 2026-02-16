@@ -4,15 +4,14 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, Form, Request
 from fastapi.responses import RedirectResponse
-from fastapi.templating import Jinja2Templates
 from supabase import Client
 
 from app.dependencies import get_db
 from app.models.kunde import KundeCreate, KundeUpdate
 from app.services import kunde_service, projekt_service
+from app.templates_config import templates
 
 router = APIRouter(tags=["Kunden Views"])
-templates = Jinja2Templates(directory="app/templates")
 
 
 @router.get("/kunden")

@@ -4,10 +4,8 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 
 from app.config import settings
-from app.utils.formatting import format_date, format_einheit, format_eur, format_menge
 
 # API Routers
 from app.routers import dashboard as dashboard_api
@@ -33,13 +31,6 @@ def create_app() -> FastAPI:
 
     # Mount static files
     app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
-
-    # Configure Jinja2 templates with custom filters
-    templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
-    templates.env.filters["format_eur"] = format_eur
-    templates.env.filters["format_date"] = format_date
-    templates.env.filters["format_menge"] = format_menge
-    templates.env.filters["format_einheit"] = format_einheit
 
     # Register API routers
     app.include_router(kunden_api.router)

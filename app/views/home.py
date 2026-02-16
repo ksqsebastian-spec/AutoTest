@@ -1,13 +1,12 @@
 """Dashboard view routes."""
 
 from fastapi import APIRouter, Depends, Request
-from fastapi.templating import Jinja2Templates
 from supabase import Client
 
 from app.dependencies import get_db
+from app.templates_config import templates
 
 router = APIRouter(tags=["Views"])
-templates = Jinja2Templates(directory="app/templates")
 
 
 @router.get("/")
