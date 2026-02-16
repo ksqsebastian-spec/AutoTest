@@ -1,0 +1,53 @@
+{% extends "pdf/default/base_pdf.html" %}
+
+{% block document_meta %}
+<table class="meta-table">
+    <tr><td><strong>Aufmass Nr.</strong></td><td><strong>{{ dokument.dokumentennummer }}</strong></td></tr>
+    {% if projekt %}
+    <tr><td>Projekt</td><td>{{ projekt.bezeichnung }} ({{ projekt.projektnummer }})</td></tr>
+    {% endif %}
+    <tr><td>Aufnahmedatum</td><td>{{ aufmass.aufnahmedatum | format_date }}</td></tr>
+    {% if aufmass.aufgenommen_von %}
+    <tr><td>Aufgenommen von</td><td>{{ aufmass.aufgenommen_von }}</td></tr>
+    {% endif %}
+</table>
+{% endblock %}
+
+{% block document_body %}
+<p class="document-title">Aufmass Nr. {{ aufmass.aufmass_nummer }}</p>
+
+<table class="positionen">
+    <thead>
+        <tr>
+            <th style="width:5%">Nr.</th>
+            <th style="width:25%">Beschreibung</th>
+            <th style="width:20%">Formel</th>
+            <th style="width:10%">L (m)</th>
+            <th style="width:10%">B (m)</th>
+            <th style="width:10%">H (m)</th>
+            <th style="width:8%">Anz.</th>
+            <th style="width:12%">Ergebnis</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pos in aufmass_positionen %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ pos.beschreibung }}</td>
+            <td>{{ pos.formel | default('-') }}</td>
+            <td class="betrag">{{ pos.laenge | default('-') }}</td>
+            <td class="betrag">{{ pos.breite | default('-') }}</td>
+            <td class="betrag">{{ pos.hoehe | default('-') }}</td>
+            <td class="betrag">{{ pos.anzahl }}</td>
+            <td class="betrag"><strong>{{ pos.ergebnis | format_menge }} {{ pos.einheit | format_einheit }}</strong></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if aufmass.geprueft_von %}
+<p>Geprueft von: {{ aufmass.geprueft_von }}
+   {% if aufmass.geprueft_am %} am {{ aufmass.geprueft_am | format_date }}{% endif %}
+</p>
+{% endif %}
+{% endblock %}

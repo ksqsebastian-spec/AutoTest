@@ -1,0 +1,99 @@
+<div class="position-table-wrapper" id="positionen-wrapper">
+    <table class="table positionen-table" id="positionen-table">
+        <thead>
+            <tr>
+                <th style="width:6%">Pos.</th>
+                <th style="width:32%">Beschreibung</th>
+                <th style="width:10%">Einheit</th>
+                <th style="width:12%">Menge</th>
+                <th style="width:14%">Einzelpreis</th>
+                <th style="width:10%">MwSt</th>
+                <th style="width:14%">Gesamt (netto)</th>
+                <th style="width:2%"></th>
+            </tr>
+        </thead>
+        <tbody id="positionen-body">
+            {% for pos in positionen %}
+            <tr class="position-row" data-index="{{ loop.index0 }}">
+                <td>
+                    <input type="number" name="positionen[{{ loop.index0 }}][position_nr]"
+                           value="{{ pos.position_nr | default(loop.index) }}"
+                           class="input-sm" min="1" aria-label="Positionsnummer">
+                </td>
+                <td>
+                    <textarea name="positionen[{{ loop.index0 }}][beschreibung]"
+                              rows="2" class="input-full"
+                              aria-label="Beschreibung Position {{ loop.index }}">{{ pos.beschreibung | default('') }}</textarea>
+                </td>
+                <td>
+                    <select name="positionen[{{ loop.index0 }}][einheit]" aria-label="Einheit">
+                        <option value="stueck" {% if pos.einheit == 'stueck' %}selected{% endif %}>Stk.</option>
+                        <option value="stunde" {% if pos.einheit == 'stunde' %}selected{% endif %}>Std.</option>
+                        <option value="m" {% if pos.einheit == 'm' %}selected{% endif %}>m</option>
+                        <option value="m2" {% if pos.einheit == 'm2' %}selected{% endif %}>m&sup2;</option>
+                        <option value="m3" {% if pos.einheit == 'm3' %}selected{% endif %}>m&sup3;</option>
+                        <option value="kg" {% if pos.einheit == 'kg' %}selected{% endif %}>kg</option>
+                        <option value="t" {% if pos.einheit == 't' %}selected{% endif %}>t</option>
+                        <option value="pauschal" {% if pos.einheit == 'pauschal' %}selected{% endif %}>psch.</option>
+                        <option value="lfm" {% if pos.einheit == 'lfm' %}selected{% endif %}>lfm</option>
+                        <option value="liter" {% if pos.einheit == 'liter' %}selected{% endif %}>l</option>
+                        <option value="tag" {% if pos.einheit == 'tag' %}selected{% endif %}>Tag(e)</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="number" name="positionen[{{ loop.index0 }}][menge]"
+                           value="{{ pos.menge | default('1.000') }}" step="0.001" min="0"
+                           class="input-sm calc-trigger" aria-label="Menge">
+                </td>
+                <td>
+                    <input type="number" name="positionen[{{ loop.index0 }}][einzelpreis]"
+                           value="{{ pos.einzelpreis | default('0.00') }}" step="0.01"
+                           class="input-sm calc-trigger" aria-label="Einzelpreis in EUR">
+                </td>
+                <td>
+                    <select name="positionen[{{ loop.index0 }}][steuersatz]" class="calc-trigger"
+                            aria-label="Steuersatz">
+                        <option value="standard" {% if pos.steuersatz == 'standard' %}selected{% endif %}>19%</option>
+                        <option value="ermaessigt" {% if pos.steuersatz == 'ermaessigt' %}selected{% endif %}>7%</option>
+                        <option value="befreit" {% if pos.steuersatz == 'befreit' %}selected{% endif %}>0%</option>
+                    </select>
+                </td>
+                <td class="position-total text-right" data-field="gesamt_netto">
+                    0,00 EUR
+                </td>
+                <td>
+                    <button type="button" class="btn-icon btn-remove-position"
+                            aria-label="Position {{ loop.index }} entfernen"
+                            data-action="remove-position">&times;</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="6" class="text-right">Netto</td>
+                <td class="text-right" id="sum-netto">0,00 EUR</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="6" class="text-right">MwSt 19%</td>
+                <td class="text-right" id="sum-mwst-19">0,00 EUR</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="6" class="text-right">MwSt 7%</td>
+                <td class="text-right" id="sum-mwst-7">0,00 EUR</td>
+                <td></td>
+            </tr>
+            <tr class="sum-total">
+                <td colspan="6" class="text-right"><strong>Brutto</strong></td>
+                <td class="text-right" id="sum-brutto"><strong>0,00 EUR</strong></td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+    <button type="button" id="btn-add-position" class="btn btn-secondary"
+            aria-label="Neue Position hinzufuegen" data-action="add-position">
+        + Position hinzufuegen
+    </button>
+</div>

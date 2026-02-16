@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 id="page-title">Dashboard</h1>
+</div>
+
+<div class="dashboard-cards" id="dashboard-overview">
+    <div class="card" id="card-kunden">
+        <div class="card-label">Aktive Kunden</div>
+        <div class="card-value">{{ stats.kunden_aktiv | default(0) }}</div>
+        <a href="/kunden" class="card-link" aria-label="Alle Kunden anzeigen">Alle anzeigen</a>
+    </div>
+
+    <div class="card" id="card-projekte">
+        <div class="card-label">Aktive Projekte</div>
+        <div class="card-value">{{ stats.projekte_aktiv | default(0) }}</div>
+        <a href="/projekte" class="card-link" aria-label="Alle Projekte anzeigen">Alle anzeigen</a>
+    </div>
+
+    <div class="card" id="card-offene-rechnungen">
+        <div class="card-label">Offene Rechnungen</div>
+        <div class="card-value">{{ stats.offene_rechnungen_anzahl | default(0) }}</div>
+        <div class="card-sub">{{ stats.offene_rechnungen_summe | default(0) | format_eur }}</div>
+        <a href="/rechnungen?status=offen" class="card-link" aria-label="Offene Rechnungen anzeigen">Anzeigen</a>
+    </div>
+</div>
+
+<div class="dashboard-section" id="section-schnellzugriff">
+    <h2>Schnellzugriff</h2>
+    <div class="quick-actions">
+        <a href="/kunden/neu" id="quick-neuer-kunde" class="btn btn-primary"
+           aria-label="Neuen Kunden anlegen">Neuer Kunde</a>
+        <a href="/projekte/neu" id="quick-neues-projekt" class="btn btn-primary"
+           aria-label="Neues Projekt anlegen">Neues Projekt</a>
+        <a href="/angebote/neu" id="quick-neues-angebot" class="btn btn-primary"
+           aria-label="Neues Angebot erstellen">Neues Angebot</a>
+        <a href="/rechnungen/neu" id="quick-neue-rechnung" class="btn btn-primary"
+           aria-label="Neue Rechnung erstellen">Neue Rechnung</a>
+    </div>
+</div>
+{% endblock %}

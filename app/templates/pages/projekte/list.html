@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Projekte{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 id="page-title">Projekte</h1>
+    <a href="/projekte/neu" id="btn-neues-projekt" class="btn btn-primary"
+       aria-label="Neues Projekt anlegen">+ Neues Projekt</a>
+</div>
+
+<div class="search-bar" id="projekte-search">
+    <form method="get" action="/projekte" id="form-projekte-suche" aria-label="Projekte suchen">
+        <input type="text" name="search" id="input-projekte-suche"
+               value="{{ search | default('') }}"
+               placeholder="Bezeichnung, Projektnr., Ort..."
+               aria-label="Suchbegriff eingeben">
+        <button type="submit" class="btn btn-secondary" aria-label="Suche starten">Suchen</button>
+    </form>
+</div>
+
+{% if projekte and projekte | length > 0 %}
+<table class="table" id="projekte-table" aria-label="Projektliste">
+    <thead>
+        <tr>
+            <th>Projektnr.</th>
+            <th>Bezeichnung</th>
+            <th>Ort</th>
+            <th>Status</th>
+            <th>Aktionen</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in projekte %}
+        <tr id="projekt-row-{{ p.id }}">
+            <td>{{ p.projektnummer }}</td>
+            <td><a href="/projekte/{{ p.id }}" aria-label="Projekt {{ p.bezeichnung }} oeffnen">{{ p.bezeichnung }}</a></td>
+            <td>{{ p.ort | default('-') }}</td>
+            <td><span class="badge">{{ p.status }}</span></td>
+            <td>
+                <a href="/projekte/{{ p.id }}" class="btn btn-sm" aria-label="Projekt Details">Details</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% include "components/pagination.html" %}
+{% else %}
+<div class="empty-state">
+    <p>Keine Projekte gefunden.</p>
+    <a href="/projekte/neu" class="btn btn-primary" aria-label="Erstes Projekt anlegen">Erstes Projekt anlegen</a>
+</div>
+{% endif %}
+{% endblock %}

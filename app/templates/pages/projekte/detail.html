@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Projekt: {{ projekt.bezeichnung }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 id="page-title">{{ projekt.projektnummer }} - {{ projekt.bezeichnung }}</h1>
+    <div class="page-actions">
+        <a href="/angebote/neu?projekt_id={{ projekt.id }}" id="btn-neues-angebot-projekt"
+           class="btn btn-secondary" aria-label="Neues Angebot fuer dieses Projekt">Neues Angebot</a>
+        <a href="/rechnungen/neu?projekt_id={{ projekt.id }}" id="btn-neue-rechnung-projekt"
+           class="btn btn-secondary" aria-label="Neue Rechnung fuer dieses Projekt">Neue Rechnung</a>
+    </div>
+</div>
+
+<div class="detail-grid">
+    <div class="detail-section" id="section-projektdaten">
+        <h2>Projektdaten</h2>
+        <dl class="detail-list">
+            <dt>Projektnummer</dt>
+            <dd>{{ projekt.projektnummer }}</dd>
+            <dt>Status</dt>
+            <dd><span class="badge">{{ projekt.status }}</span></dd>
+            <dt>Kunde</dt>
+            <dd>
+                {% if kunde %}
+                <a href="/kunden/{{ kunde.id }}">
+                    {% if kunde.firmenname %}{{ kunde.firmenname }} - {% endif %}{{ kunde.nachname }}
+                </a>
+                {% else %}-{% endif %}
+            </dd>
+            <dt>Beschreibung</dt>
+            <dd>{{ projekt.beschreibung | default('-') }}</dd>
+        </dl>
+    </div>
+
+    <div class="detail-section" id="section-baustelle">
+        <h2>Baustelle</h2>
+        <dl class="detail-list">
+            <dt>Strasse</dt>
+            <dd>{{ projekt.strasse | default('-') }}</dd>
+            <dt>PLZ / Ort</dt>
+            <dd>{{ projekt.plz | default('') }} {{ projekt.ort | default('-') }}</dd>
+        </dl>
+    </div>
+
+    <div class="detail-section" id="section-finanzen">
+        <h2>Finanzen</h2>
+        <dl class="detail-list">
+            <dt>Auftragssumme</dt>
+            <dd>{{ projekt.auftragssumme | default(0) }} EUR</dd>
+            <dt>Bauabzugsteuer</dt>
+            <dd>{% if projekt.bauabzugsteuer_relevant %}Ja ({{ projekt.bauabzugsteuer_prozent }}%){% else %}Nein{% endif %}</dd>
+            <dt>Zeitraum</dt>
+            <dd>{{ projekt.beginn_datum | default('-') }} bis {{ projekt.ende_datum | default('-') }}</dd>
+        </dl>
+    </div>
+</div>
+{% endblock %}

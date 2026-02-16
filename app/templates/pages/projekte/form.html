@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% from "components/form_macros.html" import text_field, textarea_field, select_field, checkbox_field, submit_button %}
+
+{% block title %}{% if projekt %}Projekt bearbeiten{% else %}Neues Projekt{% endif %}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 id="page-title">{% if projekt %}Projekt bearbeiten{% else %}Neues Projekt{% endif %}</h1>
+</div>
+
+<form method="post"
+      id="form-projekt"
+      action="{% if projekt %}/projekte/{{ projekt.id }}{% else %}/projekte{% endif %}"
+      aria-label="{% if projekt %}Projekt bearbeiten{% else %}Neues Projekt anlegen{% endif %}">
+
+    <fieldset>
+        <legend>Projektdaten</legend>
+
+        <div class="form-group">
+            <label for="field-kunde_id">Kunde *</label>
+            <select id="field-kunde_id" name="kunde_id" required aria-label="Kunde auswaehlen">
+                <option value="">-- Kunde waehlen --</option>
+                {% for k in kunden %}
+                <option value="{{ k.id }}"
+                    {% if projekt and projekt.kunde_id == k.id %}selected{% endif %}>
+                    {{ k.kundennummer }} - {% if k.firmenname %}{{ k.firmenname }} - {% endif %}{{ k.nachname }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        {{ text_field("bezeichnung", "Bezeichnung", projekt.bezeichnung if projekt else "", required=true) }}
+        {{ textarea_field("beschreibung", "Beschreibung", projekt.beschreibung if projekt else "") }}
+    </fieldset>
+
+    <fieldset>
+        <legend>Baustellenadresse</legend>
+        {{ text_field("strasse", "Strasse", projekt.strasse if projekt else "") }}
+        {{ text_field("plz", "PLZ", projekt.plz if projekt else "") }}
+        {{ text_field("ort", "Ort", projekt.ort if projekt else "") }}
+    </fieldset>
+
+    <fieldset>
+        <legend>Zeitraum &amp; Finanzen</legend>
+        {{ text_field("beginn_datum", "Beginn", projekt.beginn_datum if projekt else "", type="date") }}
+        {{ text_field("ende_datum", "Ende", projekt.ende_datum if projekt else "", type="date") }}
+        {{ text_field("auftragssumme", "Auftragssumme (EUR)", projekt.auftragssumme if projekt else "0", type="number") }}
+        {{ checkbox_field("bauabzugsteuer_relevant", "Bauabzugsteuer relevant", projekt.bauabzugsteuer_relevant if projekt else false) }}
+    </fieldset>
+
+    {{ submit_button("Projekt speichern" if not projekt else "Aenderungen speichern", "btn-projekt-speichern") }}
+</form>
+{% endblock %}

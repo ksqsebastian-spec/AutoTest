@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        {% include "../../static/css/pdf.css" ignore missing %}
+        {{ custom_css | default('') }}
+    </style>
+</head>
+<body>
+    {% if unternehmen %}
+    <header class="letterhead">
+        <div class="company-logo">
+            {% if unternehmen.logo_url %}
+            <img src="{{ unternehmen.logo_url }}" alt="Logo">
+            {% endif %}
+        </div>
+        <div class="company-info">
+            <h1>{{ unternehmen.firmenname }}</h1>
+            <p>{{ unternehmen.strasse }} | {{ unternehmen.plz }} {{ unternehmen.ort }}</p>
+            <p>{% if unternehmen.telefon %}Tel: {{ unternehmen.telefon }}{% endif %}
+               {% if unternehmen.email %} | {{ unternehmen.email }}{% endif %}</p>
+        </div>
+    </header>
+    {% endif %}
+
+    <div class="address-block">
+        {% if unternehmen %}
+        <div class="sender-line">
+            {{ unternehmen.firmenname }} | {{ unternehmen.strasse }} | {{ unternehmen.plz }} {{ unternehmen.ort }}
+        </div>
+        {% endif %}
+        <div class="recipient">
+            {% if kunde %}
+            {% if kunde.firmenname %}{{ kunde.firmenname }}<br>{% endif %}
+            {% if kunde.anrede %}{{ kunde.anrede }} {% endif %}{{ kunde.vorname | default('') }} {{ kunde.nachname }}<br>
+            {{ kunde.strasse }}<br>
+            {{ kunde.plz }} {{ kunde.ort }}
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="document-meta">
+        {% block document_meta %}{% endblock %}
+    </div>
+
+    <div class="document-body">
+        {% block document_body %}{% endblock %}
+    </div>
+
+    {% if unternehmen %}
+    <footer class="page-footer">
+        <div class="footer-col">
+            {{ unternehmen.firmenname }}<br>
+            {{ unternehmen.strasse }}<br>
+            {{ unternehmen.plz }} {{ unternehmen.ort }}
+        </div>
+        <div class="footer-col">
+            {% if unternehmen.steuernummer %}Steuernr: {{ unternehmen.steuernummer }}<br>{% endif %}
+            {% if unternehmen.ust_id %}USt-IdNr: {{ unternehmen.ust_id }}<br>{% endif %}
+            {% if unternehmen.handelsregister %}HRB: {{ unternehmen.handelsregister }}{% endif %}
+        </div>
+        <div class="footer-col">
+            {% if unternehmen.bankname %}{{ unternehmen.bankname }}<br>{% endif %}
+            {% if unternehmen.iban %}IBAN: {{ unternehmen.iban }}<br>{% endif %}
+            {% if unternehmen.bic %}BIC: {{ unternehmen.bic }}{% endif %}
+        </div>
+    </footer>
+    {% endif %}
+</body>
+</html>

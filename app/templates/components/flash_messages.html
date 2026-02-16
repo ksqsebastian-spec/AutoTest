@@ -1,0 +1,10 @@
+{% if messages %}
+<div class="flash-messages" id="flash-messages" role="alert">
+    {% for msg in messages %}
+    <div class="flash flash-{{ msg.type }}" data-message-type="{{ msg.type }}">
+        {{ msg.text }}
+        <button type="button" class="flash-close" aria-label="Meldung schliessen">&times;</button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}

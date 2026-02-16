@@ -1,0 +1,74 @@
+{% extends "pdf/default/base_pdf.html" %}
+
+{% block document_meta %}
+<table class="meta-table">
+    <tr><td><strong>Angebot Nr.</strong></td><td><strong>{{ dokument.dokumentennummer }}</strong></td></tr>
+    <tr><td>Kundennummer</td><td>{{ kunde.kundennummer }}</td></tr>
+    <tr><td>Datum</td><td>{{ dokument.datum | format_date }}</td></tr>
+    {% if projekt %}
+    <tr><td>Projekt</td><td>{{ projekt.bezeichnung }} ({{ projekt.projektnummer }})</td></tr>
+    {% endif %}
+</table>
+{% endblock %}
+
+{% block document_body %}
+<p class="document-title">Angebot</p>
+
+{% if dokument.einleitungstext %}
+<p class="intro-text">{{ dokument.einleitungstext }}</p>
+{% else %}
+<p class="intro-text">Sehr geehrte Damen und Herren, wir erlauben uns Ihnen folgendes Angebot zu unterbreiten:</p>
+{% endif %}
+
+<table class="positionen">
+    <thead>
+        <tr>
+            <th class="pos-nr">Pos.</th>
+            <th class="pos-beschreibung">Beschreibung</th>
+            <th class="pos-einheit">Einheit</th>
+            <th class="pos-menge">Menge</th>
+            <th class="pos-einzelpreis">Einzelpreis</th>
+            <th class="pos-gesamt">Gesamt</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pos in positionen %}
+        <tr>
+            <td class="pos-nr">{{ pos.position_nr }}</td>
+            <td class="pos-beschreibung">{{ pos.beschreibung }}</td>
+            <td class="pos-einheit">{{ pos.einheit | format_einheit }}</td>
+            <td class="pos-menge betrag">{{ pos.menge | format_menge }}</td>
+            <td class="pos-einzelpreis betrag">{{ pos.einzelpreis | format_eur }}</td>
+            <td class="pos-gesamt betrag">{{ pos.gesamt_netto | format_eur }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="summen-block">
+    <table>
+        <tr>
+            <td>Nettobetrag</td>
+            <td>{{ dokument.netto_summe | format_eur }}</td>
+        </tr>
+        {% for mwst in mwst_aufschluesselung %}
+        <tr>
+            <td>zzgl. {{ mwst.steuersatz_prozent }}% MwSt</td>
+            <td>{{ mwst.mwst_betrag | format_eur }}</td>
+        </tr>
+        {% endfor %}
+        <tr class="total">
+            <td><strong>Gesamtbetrag (brutto)</strong></td>
+            <td><strong>{{ dokument.brutto_summe | format_eur }}</strong></td>
+        </tr>
+    </table>
+</div>
+
+{% if dokument.schlusstext %}
+<p class="closing-text">{{ dokument.schlusstext }}</p>
+{% else %}
+<p class="closing-text">
+    Dieses Angebot ist 30 Tage gueltig. Wir freuen uns auf Ihren Auftrag.
+</p>
+{% endif %}
+{% endblock %}

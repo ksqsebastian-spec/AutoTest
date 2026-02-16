@@ -1,0 +1,79 @@
+{% extends "pdf/default/base_pdf.html" %}
+
+{% block document_meta %}
+<table class="meta-table">
+    <tr><td><strong>Mahnung Nr.</strong></td><td><strong>{{ dokument.dokumentennummer }}</strong></td></tr>
+    <tr><td>Kundennummer</td><td>{{ kunde.kundennummer }}</td></tr>
+    <tr><td>Datum</td><td>{{ dokument.datum | format_date }}</td></tr>
+    <tr><td>Zu Rechnung</td><td>{{ mahnung.rechnung_nummer | default('-') }}</td></tr>
+</table>
+{% endblock %}
+
+{% block document_body %}
+{% if mahnung.stufe == 'erste' %}
+<p class="document-title">Zahlungserinnerung</p>
+<p>Sehr geehrte Damen und Herren,</p>
+<p>bei der Pruefung unserer Konten haben wir festgestellt, dass die folgende Rechnung
+   noch nicht beglichen wurde. Sicher handelt es sich um ein Versehen.</p>
+{% elif mahnung.stufe == 'zweite' %}
+<p class="mahnstufe-header">2. Mahnung</p>
+<p>Sehr geehrte Damen und Herren,</p>
+<p>trotz unserer Zahlungserinnerung konnten wir bisher keinen Zahlungseingang feststellen.
+   Wir bitten Sie dringend, den offenen Betrag umgehend zu ueberweisen.</p>
+{% else %}
+<p class="mahnstufe-header">Letzte Mahnung</p>
+<p>Sehr geehrte Damen und Herren,</p>
+<p>leider konnten wir trotz mehrfacher Aufforderung noch keinen Zahlungseingang verzeichnen.
+   Wir sehen uns gezwungen, bei Nichtzahlung bis zum angegebenen Datum rechtliche Schritte einzuleiten.</p>
+{% endif %}
+
+<table class="positionen">
+    <thead>
+        <tr>
+            <th>Rechnungsnr.</th>
+            <th>Rechnungsdatum</th>
+            <th>Faellig seit</th>
+            <th class="betrag">Offener Betrag</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ mahnung.rechnung_nummer | default('-') }}</td>
+            <td>{{ mahnung.faelligkeitsdatum | format_date }}</td>
+            <td>{{ mahnung.faelligkeitsdatum | format_date }}</td>
+            <td class="betrag">{{ mahnung.offener_betrag | format_eur }}</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="summen-block">
+    <table>
+        <tr>
+            <td>Offener Rechnungsbetrag</td>
+            <td>{{ mahnung.offener_betrag | format_eur }}</td>
+        </tr>
+        {% if mahnung.mahngebuehr and mahnung.mahngebuehr > 0 %}
+        <tr>
+            <td>Mahngebuehr</td>
+            <td>{{ mahnung.mahngebuehr | format_eur }}</td>
+        </tr>
+        {% endif %}
+        {% if mahnung.verzugszinsen and mahnung.verzugszinsen > 0 %}
+        <tr>
+            <td>Verzugszinsen</td>
+            <td>{{ mahnung.verzugszinsen | format_eur }}</td>
+        </tr>
+        {% endif %}
+        <tr class="total">
+            <td><strong>Gesamtforderung</strong></td>
+            <td><strong>{{ (mahnung.offener_betrag + mahnung.mahngebuehr + mahnung.verzugszinsen) | format_eur }}</strong></td>
+        </tr>
+    </table>
+</div>
+
+<p>Bitte ueberweisen Sie den Gesamtbetrag bis zum
+   <strong>{{ mahnung.mahnfrist | format_date }}</strong>
+   auf das unten genannte Konto.</p>
+
+<p>Sollte sich Ihre Zahlung mit diesem Schreiben ueberschnitten haben, betrachten Sie es bitte als gegenstandslos.</p>
+{% endblock %}

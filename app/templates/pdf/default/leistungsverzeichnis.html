@@ -1,0 +1,37 @@
+{% extends "pdf/default/base_pdf.html" %}
+
+{% block document_meta %}
+<table class="meta-table">
+    <tr><td><strong>LV Nr.</strong></td><td><strong>{{ dokument.dokumentennummer }}</strong></td></tr>
+    {% if projekt %}
+    <tr><td>Projekt</td><td>{{ projekt.bezeichnung }} ({{ projekt.projektnummer }})</td></tr>
+    {% endif %}
+    {% if lv.gewerk %}
+    <tr><td>Gewerk</td><td>{{ lv.gewerk }}</td></tr>
+    {% endif %}
+    <tr><td>Datum</td><td>{{ dokument.datum | format_date }}</td></tr>
+</table>
+{% endblock %}
+
+{% block document_body %}
+<p class="document-title">Leistungsverzeichnis</p>
+
+{% for pos in lv_positionen %}
+    {% if pos.ist_titel %}
+    <div class="lv-titel">{{ pos.ordnungszahl }} {{ pos.beschreibung }}</div>
+    {% else %}
+    <div class="lv-position">
+        <table class="positionen" style="margin:1mm 0">
+            <tr>
+                <td style="width:12%">{{ pos.ordnungszahl }}</td>
+                <td style="width:40%">{{ pos.beschreibung }}</td>
+                <td style="width:10%">{{ pos.einheit | format_einheit }}</td>
+                <td style="width:12%" class="betrag">{{ pos.menge | format_menge }}</td>
+                <td style="width:13%" class="betrag">{{ pos.einzelpreis | format_eur }}</td>
+                <td style="width:13%" class="betrag">{{ pos.gesamtpreis | format_eur }}</td>
+            </tr>
+        </table>
+    </div>
+    {% endif %}
+{% endfor %}
+{% endblock %}

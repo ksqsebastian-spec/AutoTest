@@ -1,0 +1,64 @@
+{% macro text_field(name, label, value="", required=false, type="text", placeholder="") %}
+<div class="form-group">
+    <label for="field-{{ name }}">{{ label }}{% if required %} *{% endif %}</label>
+    <input type="{{ type }}"
+           id="field-{{ name }}"
+           name="{{ name }}"
+           value="{{ value }}"
+           {% if required %}required{% endif %}
+           {% if placeholder %}placeholder="{{ placeholder }}"{% endif %}
+           aria-label="{{ label }}">
+</div>
+{% endmacro %}
+
+{% macro textarea_field(name, label, value="", required=false, rows=3) %}
+<div class="form-group">
+    <label for="field-{{ name }}">{{ label }}{% if required %} *{% endif %}</label>
+    <textarea id="field-{{ name }}"
+              name="{{ name }}"
+              rows="{{ rows }}"
+              {% if required %}required{% endif %}
+              aria-label="{{ label }}">{{ value }}</textarea>
+</div>
+{% endmacro %}
+
+{% macro select_field(name, label, options, selected="", required=false) %}
+<div class="form-group">
+    <label for="field-{{ name }}">{{ label }}{% if required %} *{% endif %}</label>
+    <select id="field-{{ name }}"
+            name="{{ name }}"
+            {% if required %}required{% endif %}
+            aria-label="{{ label }}">
+        <option value="">-- Bitte waehlen --</option>
+        {% for opt in options %}
+        <option value="{{ opt.value }}" {% if opt.value == selected %}selected{% endif %}>
+            {{ opt.label }}
+        </option>
+        {% endfor %}
+    </select>
+</div>
+{% endmacro %}
+
+{% macro checkbox_field(name, label, checked=false) %}
+<div class="form-group form-check">
+    <label for="field-{{ name }}">
+        <input type="checkbox"
+               id="field-{{ name }}"
+               name="{{ name }}"
+               {% if checked %}checked{% endif %}
+               aria-label="{{ label }}">
+        {{ label }}
+    </label>
+</div>
+{% endmacro %}
+
+{% macro submit_button(label="Speichern", id="btn-submit") %}
+<div class="form-actions">
+    <button type="submit" id="{{ id }}" class="btn btn-primary" aria-label="{{ label }}">
+        {{ label }}
+    </button>
+    <a href="javascript:history.back()" class="btn btn-secondary" aria-label="Abbrechen">
+        Abbrechen
+    </a>
+</div>
+{% endmacro %}

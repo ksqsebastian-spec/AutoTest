@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}Kunde: {{ kunde.nachname }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 id="page-title">
+        {% if kunde.firmenname %}{{ kunde.firmenname }} - {% endif %}
+        {{ kunde.nachname }}{% if kunde.vorname %}, {{ kunde.vorname }}{% endif %}
+    </h1>
+    <div class="page-actions">
+        <a href="/kunden/{{ kunde.id }}/bearbeiten" id="btn-kunde-bearbeiten"
+           class="btn btn-primary" aria-label="Kunden bearbeiten">Bearbeiten</a>
+        <a href="/angebote/neu?kunde_id={{ kunde.id }}" id="btn-neues-angebot-kunde"
+           class="btn btn-secondary" aria-label="Neues Angebot fuer diesen Kunden">Neues Angebot</a>
+        <a href="/rechnungen/neu?kunde_id={{ kunde.id }}" id="btn-neue-rechnung-kunde"
+           class="btn btn-secondary" aria-label="Neue Rechnung fuer diesen Kunden">Neue Rechnung</a>
+    </div>
+</div>
+
+<div class="detail-grid">
+    <div class="detail-section" id="section-stammdaten">
+        <h2>Stammdaten</h2>
+        <dl class="detail-list">
+            <dt>Kundennummer</dt>
+            <dd id="kunde-kundennummer">{{ kunde.kundennummer }}</dd>
+
+            <dt>Anrede</dt>
+            <dd>{{ kunde.anrede | default('-') }}</dd>
+
+            <dt>Firma</dt>
+            <dd>{{ kunde.firmenname | default('-') }}</dd>
+
+            <dt>Name</dt>
+            <dd>{{ kunde.nachname }}{% if kunde.vorname %}, {{ kunde.vorname }}{% endif %}</dd>
+
+            <dt>Status</dt>
+            <dd>
+                <span class="badge {% if kunde.aktiv %}badge-success{% else %}badge-muted{% endif %}">
+                    {% if kunde.aktiv %}Aktiv{% else %}Inaktiv{% endif %}
+                </span>
+            </dd>
+        </dl>
+    </div>
+
+    <div class="detail-section" id="section-adresse">
+        <h2>Adresse</h2>
+        <dl class="detail-list">
+            <dt>Strasse</dt>
+            <dd>{{ kunde.strasse }}</dd>
+            <dt>PLZ / Ort</dt>
+            <dd>{{ kunde.plz }} {{ kunde.ort }}</dd>
+            <dt>Land</dt>
+            <dd>{{ kunde.land | default('Deutschland') }}</dd>
+        </dl>
+    </div>
+
+    <div class="detail-section" id="section-kontakt">
+        <h2>Kontakt</h2>
+        <dl class="detail-list">
+            <dt>Telefon</dt>
+            <dd>{{ kunde.telefon | default('-') }}</dd>
+            <dt>Mobil</dt>
+            <dd>{{ kunde.mobil | default('-') }}</dd>
+            <dt>E-Mail</dt>
+            <dd>{{ kunde.email | default('-') }}</dd>
+        </dl>
+    </div>
+
+    <div class="detail-section" id="section-konditionen">
+        <h2>Zahlungskonditionen</h2>
+        <dl class="detail-list">
+            <dt>USt-IdNr.</dt>
+            <dd>{{ kunde.ust_id | default('-') }}</dd>
+            <dt>Zahlungsziel</dt>
+            <dd>{{ kunde.zahlungsziel_tage }} Tage</dd>
+            <dt>Skonto</dt>
+            <dd>{{ kunde.skonto_prozent }}% innerhalb {{ kunde.skonto_tage }} Tagen</dd>
+            <dt>Bauauftraggeber</dt>
+            <dd>{% if kunde.ist_auftraggeber_bau %}Ja{% else %}Nein{% endif %}</dd>
+        </dl>
+    </div>
+</div>
+
+{% if kunde.notizen %}
+<div class="detail-section" id="section-notizen">
+    <h2>Notizen</h2>
+    <p>{{ kunde.notizen }}</p>
+</div>
+{% endif %}
+
+<div class="detail-section" id="section-projekte">
+    <h2>Projekte</h2>
+    {% if projekte and projekte | length > 0 %}
+    <table class="table" aria-label="Projekte dieses Kunden">
+        <thead>
+            <tr>
+                <th>Projektnr.</th>
+                <th>Bezeichnung</th>
+                <th>Status</th>
+                <th>Ort</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in projekte %}
+            <tr>
+                <td><a href="/projekte/{{ p.id }}">{{ p.projektnummer }}</a></td>
+                <td>{{ p.bezeichnung }}</td>
+                <td>{{ p.status }}</td>
+                <td>{{ p.ort | default('-') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="text-muted">Noch keine Projekte vorhanden.</p>
+    {% endif %}
+</div>
+{% endblock %}

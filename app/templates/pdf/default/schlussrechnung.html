@@ -1,0 +1,63 @@
+{% extends "pdf/default/rechnung.html" %}
+
+{% block document_body %}
+<p class="document-title">Schlussrechnung</p>
+
+{% if dokument.einleitungstext %}
+<p class="intro-text">{{ dokument.einleitungstext }}</p>
+{% endif %}
+
+<table class="positionen">
+    <thead>
+        <tr>
+            <th class="pos-nr">Pos.</th>
+            <th class="pos-beschreibung">Beschreibung</th>
+            <th class="pos-einheit">Einheit</th>
+            <th class="pos-menge">Menge</th>
+            <th class="pos-einzelpreis">Einzelpreis</th>
+            <th class="pos-gesamt">Gesamt</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pos in positionen %}
+        <tr>
+            <td class="pos-nr">{{ pos.position_nr }}</td>
+            <td class="pos-beschreibung">{{ pos.beschreibung }}</td>
+            <td class="pos-einheit">{{ pos.einheit | format_einheit }}</td>
+            <td class="pos-menge betrag">{{ pos.menge | format_menge }}</td>
+            <td class="pos-einzelpreis betrag">{{ pos.einzelpreis | format_eur }}</td>
+            <td class="pos-gesamt betrag">{{ pos.gesamt_netto | format_eur }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="summen-block">
+    <table>
+        <tr>
+            <td>Gesamtleistung netto</td>
+            <td>{{ schluss.gesamtleistung_netto | format_eur }}</td>
+        </tr>
+        <tr>
+            <td>abzgl. geleistete Abschlagszahlungen</td>
+            <td>- {{ schluss.summe_abschlaege_netto | format_eur }}</td>
+        </tr>
+        <tr class="total">
+            <td><strong>Restbetrag netto</strong></td>
+            <td><strong>{{ schluss.restbetrag_netto | format_eur }}</strong></td>
+        </tr>
+        {% for mwst in mwst_aufschluesselung %}
+        <tr>
+            <td>zzgl. {{ mwst.steuersatz_prozent }}% MwSt</td>
+            <td>{{ mwst.mwst_betrag | format_eur }}</td>
+        </tr>
+        {% endfor %}
+        <tr class="total">
+            <td><strong>Zahlbetrag</strong></td>
+            <td><strong>{{ dokument.zahlbetrag | format_eur }}</strong></td>
+        </tr>
+    </table>
+</div>
+
+<p>Bitte ueberweisen Sie den Restbetrag bis zum <strong>{{ dokument.zahlungsziel | format_date }}</strong>.</p>
+{% endblock %}

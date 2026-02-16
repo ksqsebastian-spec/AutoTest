@@ -1,0 +1,17 @@
+{% if total_pages > 1 %}
+<nav class="pagination" aria-label="Seitennavigation">
+    {% if page > 1 %}
+    <a href="?page={{ page - 1 }}{% if search %}&search={{ search }}{% endif %}"
+       class="btn btn-sm" aria-label="Vorherige Seite">&laquo; Zurueck</a>
+    {% endif %}
+
+    <span class="pagination-info">
+        Seite {{ page }} von {{ total_pages }} ({{ total }} Eintraege)
+    </span>
+
+    {% if page < total_pages %}
+    <a href="?page={{ page + 1 }}{% if search %}&search={{ search }}{% endif %}"
+       class="btn btn-sm" aria-label="Naechste Seite">Weiter &raquo;</a>
+    {% endif %}
+</nav>
+{% endif %}

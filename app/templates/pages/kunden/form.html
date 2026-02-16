@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% from "components/form_macros.html" import text_field, textarea_field, select_field, checkbox_field, submit_button %}
+
+{% block title %}{% if kunde %}Kunde bearbeiten{% else %}Neuer Kunde{% endif %}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 id="page-title">{% if kunde %}Kunde bearbeiten: {{ kunde.nachname }}{% else %}Neuer Kunde{% endif %}</h1>
+</div>
+
+<form method="post"
+      id="form-kunde"
+      action="{% if kunde %}/kunden/{{ kunde.id }}{% else %}/kunden{% endif %}"
+      aria-label="{% if kunde %}Kunde bearbeiten{% else %}Neuen Kunden anlegen{% endif %}">
+
+    <fieldset>
+        <legend>Kontaktdaten</legend>
+
+        {{ select_field("anrede", "Anrede", [
+            {"value": "Herr", "label": "Herr"},
+            {"value": "Frau", "label": "Frau"},
+            {"value": "Firma", "label": "Firma"},
+        ], kunde.anrede if kunde else "") }}
+
+        {{ text_field("firmenname", "Firmenname", kunde.firmenname if kunde else "") }}
+        {{ text_field("vorname", "Vorname", kunde.vorname if kunde else "") }}
+        {{ text_field("nachname", "Nachname", kunde.nachname if kunde else "", required=true) }}
+    </fieldset>
+
+    <fieldset>
+        <legend>Adresse</legend>
+        {{ text_field("strasse", "Strasse", kunde.strasse if kunde else "", required=true) }}
+        {{ text_field("plz", "PLZ", kunde.plz if kunde else "", required=true) }}
+        {{ text_field("ort", "Ort", kunde.ort if kunde else "", required=true) }}
+        {{ text_field("land", "Land", kunde.land if kunde else "Deutschland") }}
+    </fieldset>
+
+    <fieldset>
+        <legend>Kommunikation</legend>
+        {{ text_field("telefon", "Telefon", kunde.telefon if kunde else "", type="tel") }}
+        {{ text_field("mobil", "Mobil", kunde.mobil if kunde else "", type="tel") }}
+        {{ text_field("email", "E-Mail", kunde.email if kunde else "", type="email") }}
+    </fieldset>
+
+    <fieldset>
+        <legend>Steuer &amp; Zahlungskonditionen</legend>
+        {{ text_field("ust_id", "USt-IdNr.", kunde.ust_id if kunde else "", placeholder="DE123456789") }}
+        {{ text_field("steuernummer", "Steuernummer", kunde.steuernummer if kunde else "") }}
+        {{ text_field("zahlungsziel_tage", "Zahlungsziel (Tage)", kunde.zahlungsziel_tage if kunde else "30", type="number") }}
+        {{ text_field("skonto_prozent", "Skonto (%)", kunde.skonto_prozent if kunde else "0", type="number") }}
+        {{ text_field("skonto_tage", "Skonto-Frist (Tage)", kunde.skonto_tage if kunde else "0", type="number") }}
+        {{ checkbox_field("ist_auftraggeber_bau", "Ist Auftraggeber im Baubereich", kunde.ist_auftraggeber_bau if kunde else false) }}
+        {{ checkbox_field("freistellungsbescheid_vorhanden", "Freistellungsbescheid vorhanden", kunde.freistellungsbescheid_vorhanden if kunde else false) }}
+    </fieldset>
+
+    <fieldset>
+        <legend>Notizen</legend>
+        {{ textarea_field("notizen", "Interne Notizen", kunde.notizen if kunde else "") }}
+    </fieldset>
+
+    {{ submit_button("Kunde speichern" if not kunde else "Aenderungen speichern", "btn-kunde-speichern") }}
+</form>
+{% endblock %}
